@@ -3,24 +3,26 @@ import numpy as np
 
 pygame.init()
 
-WIDTH = 600
-HEIGHT = 600
+screen = pygame.display.set_mode()
+
+WIDTH, HEIGHT = screen.get_size()
 
 LINE_COLOR = (131,139,139)
 PAPER_COLOR = (240,255,255)
 CIRCLE_COLOR = (0, 0, 255)
 CROSS_COLOR = (255, 0, 0)
 
-LINE_WIDTH = 15
+LINE_WIDTH = 2
 
-BOARD_ROWS = 3
-BOARD_COLS = 3
+BOARD_ROWS = 1000
+BOARD_COLS = 1000
 
-CIRCLE_RADIUS = 60
-CIRCLE_WIDTH = 15
+CIRCLE_RADIUS = 6
+CIRCLE_WIDTH = 1
 
-CROSS_WIDTH = 25
-SPACE = 55
+CROSS_WIDTH = 2
+SPACE = 5
+
 
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -33,19 +35,23 @@ def draw_figures():
     for row in range(BOARD_ROWS):
         for col in range(BOARD_COLS):
             if board[row][col] == 1:
-                pygame.draw.circle(screen, CIRCLE_COLOR, (int(col * 200 + 100), int(row * 200 + 100)), CIRCLE_RADIUS, CIRCLE_WIDTH)
+                pygame.draw.circle(screen, CIRCLE_COLOR, (int(col * 20 + 10), int(row * 20 + 10)), CIRCLE_RADIUS, CIRCLE_WIDTH)
             elif board[row][col] == 2:
-                pygame.draw.line(screen, CROSS_COLOR, (col * 200 + SPACE, row * 200 + 200 - SPACE), (col * 200 + 200 - SPACE, row * 200 + SPACE), CROSS_WIDTH)
-                pygame.draw.line(screen, CROSS_COLOR, (col * 200 + SPACE, row * 200 + SPACE), (col * 200 + 200 - SPACE, row * 200 + 200 - SPACE), CROSS_WIDTH)
+                pygame.draw.line(screen, CROSS_COLOR, (col * 20 + SPACE, row * 20 + 20 - SPACE), (col * 20 + 20 - SPACE, row * 20 + SPACE), CROSS_WIDTH)
+                pygame.draw.line(screen, CROSS_COLOR, (col * 20 + SPACE, row * 20 + SPACE), (col * 20 + 20 - SPACE, row * 20 + 20 - SPACE), CROSS_WIDTH)
                 
 
 def draw_lines():
-    pygame.draw.line(screen, LINE_COLOR, (0, 200), (600, 200), LINE_WIDTH)
-    pygame.draw.line(screen, LINE_COLOR, (0, 400), (600, 400), LINE_WIDTH)
-    pygame.draw.line(screen, LINE_COLOR, (200, 0), (200, 600), LINE_WIDTH)
-    pygame.draw.line(screen, LINE_COLOR, (400, 0), (400, 600), LINE_WIDTH)
+    divider_for_squares = 20
+    WIDTH_SQUARES = int(WIDTH / divider_for_squares) # how many squares are on width side of paper
+    HEIGHT_SQUARES = int(HEIGHT / divider_for_squares) # how many squares are on height side of paper
 
-
+    for x in range(WIDTH_SQUARES):
+        pygame.draw.line(screen, LINE_COLOR, (x * divider_for_squares, 0), (x * divider_for_squares, HEIGHT), LINE_WIDTH)
+    
+    for y in range(HEIGHT_SQUARES):
+        pygame.draw.line(screen, LINE_COLOR, (0, y * divider_for_squares), (WIDTH, y * divider_for_squares), LINE_WIDTH)
+    
 def mark_square(row, col, player):
     board[row][col] = player
 
@@ -121,7 +127,7 @@ def draw_desc_diagonal(player):
 
 
 def restart():
-    screen.fill(BG_COLOR)
+    screen.fill(PAPER_COLOR)
     draw_lines()
     player = 1
     for row in range(BOARD_ROWS):
@@ -148,8 +154,8 @@ while True:
             mouseX = event.pos[0]
             mouseY = event.pos[1]
 
-            clicked_row = int(mouseY // 200)
-            clicked_col = int(mouseX // 200)
+            clicked_row = int(mouseY // 20)
+            clicked_col = int(mouseX // 20)
 
             if available_square(clicked_row, clicked_col):
                 if player == 1:
