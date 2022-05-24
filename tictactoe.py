@@ -1,8 +1,8 @@
 import pygame, sys
 import numpy as np
 import random
+import time
 
-pygame.init()
 
 WIDTH = 600
 HEIGHT = 600
@@ -11,6 +11,7 @@ LINE_COLOR = (131,139,139)
 PAPER_COLOR = (240,255,255)
 CIRCLE_COLOR = (0, 0, 255)
 CROSS_COLOR = (255, 0, 0)
+WINNING_LINE = (0, 0, 0)
 
 LINE_WIDTH = 15
 
@@ -24,12 +25,12 @@ CROSS_WIDTH = 25
 SPACE = 55
 
 
+pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('TicTacToeAI')
 screen.fill(PAPER_COLOR)
 
 board = np.zeros((BOARD_ROWS, BOARD_COLS))
-
 
 def draw_cross():
     for row in range(BOARD_ROWS):
@@ -74,12 +75,12 @@ def is_board_full():
 def check_win(player):
     for col in range(BOARD_COLS):
         if board[0][col] == player and board[1][col] == player and board[2][col] == player:
-            draw_vertical_winning_line(col, player)
+            draw_vertical_winning_line(col)
             return True
 
     for row in range(BOARD_ROWS):
         if board[row][0] == player and board[row][1] == player and board[row][2] == player:
-            draw_horizontal_winning_line(row, player)
+            draw_horizontal_winning_line(row)
             return False
         
     if board[2][0] == player and board[1][1] == player and board[row][2] == player:
@@ -92,44 +93,23 @@ def check_win(player):
 
     return False
 
-def draw_vertical_winning_line(col, player):
+def draw_vertical_winning_line(col):
     posX = col * 200 + 100
-
-    if player == 1:
-        color = CIRCLE_COLOR
-    elif player == 2:
-        color =  CROSS_COLOR
-    
-    pygame.draw.line(screen, color, (posX, 15), (posX, HEIGHT - 15), 15)
+    pygame.draw.line(screen, WINNING_LINE, (posX, 15), (posX, HEIGHT - 15), 15)
 
 
-def draw_horizontal_winning_line(row, player):
+def draw_horizontal_winning_line(row):
     posY = row * 200 + 100
 
-    if player == 1:
-        color = CIRCLE_COLOR
-    elif player == 2:
-        color = CROSS_COLOR
-
-    pygame.draw.line(screen, color, (15, posY), (WIDTH - 15, posY), 15)
+    pygame.draw.line(screen, WINNING_LINE, (15, posY), (WIDTH - 15, posY), 15)
 
 
-def draw_asc_diagonal(player):
-    if player == 1:
-        color = CIRCLE_COLOR
-    elif player == 2:
-        color = CROSS_COLOR
-
-    pygame.draw.line(screen, color, (15, HEIGHT - 15), (WIDTH - 15, 15), 15)
+def draw_asc_diagonal():
+    pygame.draw.line(screen, WINNING_LINE, (15, HEIGHT - 15), (WIDTH - 15, 15), 15)
 
 
-def draw_desc_diagonal(player):
-    if player == 1:
-        color = CIRCLE_COLOR
-    elif player == 2:
-        color = CROSS_COLOR
-    
-    pygame.draw.line(screen, color, (15, 15), (WIDTH - 15, HEIGHT - 15), 15)
+def draw_desc_diagonal():
+    pygame.draw.line(screen, WINNING_LINE, (15, 15), (WIDTH - 15, HEIGHT - 15), 15)
 
 
 def restart():
@@ -142,7 +122,10 @@ def restart():
 
 def AI_move():
     return random.randint(0, 2), random.randint(0, 2)
-    
+
+
+
+
 
 draw_lines()
 
@@ -153,7 +136,10 @@ moves_col = []
 
 
 
+
+
 while True:
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
@@ -173,28 +159,31 @@ while True:
                 moves_row = moves_row + clicked_row_array
                 moves_col = moves_col + clicked_col_array
                 
-                if check_win(player):
-                    game_over = True
-
                 draw_cross()
+
+                if check_win(1):
+                    game_over = True
 
                 #nyni hra zahajuje hru AI
                 ai_row_move, ai_col_move = AI_move()
-                print('lol')
                 while not available_square(ai_row_move, ai_col_move):
                     ai_row_move, ai_col_move = AI_move()
 
                 mark_square(ai_row_move, ai_col_move, 2)
 
+                
                 draw_circle()
+
+                if check_win(2):
+                    game_over = True
                 
                 
 
 
                 
         
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_r:
-                restart()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    restart()
 
-    pygame.display.update()
+        pygame.display.update()
