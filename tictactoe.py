@@ -163,8 +163,11 @@ while True:
 
                 if check_win(1):
                     game_over = True
+                pygame.display.update()
+
 
                 #nyni hra zahajuje hru AI
+                time.sleep(0.2)
                 ai_row_move, ai_col_move = AI_move()
                 while not available_square(ai_row_move, ai_col_move):
                     ai_row_move, ai_col_move = AI_move()
@@ -176,10 +179,8 @@ while True:
 
                 if check_win(2):
                     game_over = True
+                pygame.display.update()
                 
-                
-
-
                 
         
             if event.type == pygame.KEYDOWN:
