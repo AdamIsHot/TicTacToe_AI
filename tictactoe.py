@@ -138,8 +138,6 @@ while True:
         #hra zahajuje hru hrace
         if event.type == pygame.MOUSEBUTTONDOWN:
             number_of_played_games += 1
-            if number_of_played_games == 5:
-                restart()
             print(number_of_played_games)
 
             mouseX = event.pos[0]
@@ -185,6 +183,8 @@ while True:
 
                     pygame.display.update()
                 
+            if number_of_played_games == 5:
+                restart()
                 
         
             if event.type == pygame.KEYDOWN:
