@@ -75,9 +75,9 @@ def check_win(player):
     for row in range(BOARD_ROWS):
         if board[row][0] == player and board[row][1] == player and board[row][2] == player:
             draw_horizontal_winning_line(row)
-            return False
+            return True
         
-    if board[2][0] == player and board[1][1] == player and board[row][2] == player:
+    if board[2][0] == player and board[1][1] == player and board[2][0] == player:
         draw_asc_diagonal()
         return True
 
@@ -127,20 +127,21 @@ player = 1
 game_over = False
 moves_row = []
 moves_col = []
-
-
-
-
-
+number_of_played_games = 0
 
 while True:
-    
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         
         #hra zahajuje hru hrace
         if event.type == pygame.MOUSEBUTTONDOWN:
+            number_of_played_games += 1
+            if number_of_played_games == 5:
+                restart()
+            print(number_of_played_games)
+
             mouseX = event.pos[0]
             mouseY = event.pos[1]
 
@@ -160,6 +161,7 @@ while True:
                 if check_win(1):
                     pygame.display.update()
                     time.sleep(0.2)
+                    number_of_played_games = 0
                     restart()
                 else:
                     pygame.display.update()
@@ -178,6 +180,7 @@ while True:
                     if check_win(2):
                         pygame.display.update()
                         time.sleep(0.2)
+                        number_of_played_games = 0
                         restart()
 
                     pygame.display.update()
