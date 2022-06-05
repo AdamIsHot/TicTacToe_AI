@@ -140,7 +140,7 @@ while True:
             sys.exit()
         
         #hra zahajuje hru hrace
-        if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+        if event.type == pygame.MOUSEBUTTONDOWN:
             mouseX = event.pos[0]
             mouseY = event.pos[1]
 
@@ -158,25 +158,29 @@ while True:
                 draw_cross()
 
                 if check_win(1):
-                    game_over = True
-                    another_game()
-                pygame.display.update()
-
-                #nyni hra zahajuje hru AI
-                time.sleep(0.2)
-                ai_row_move, ai_col_move = AI_move()
-                while not available_square(ai_row_move, ai_col_move):
+                    pygame.display.update()
+                    time.sleep(0.2)
+                    restart()
+                else:
+                    pygame.display.update()
+                    
+                    #nyni hra zahajuje hru AI
+                    time.sleep(0.2)
                     ai_row_move, ai_col_move = AI_move()
+                    while not available_square(ai_row_move, ai_col_move):
+                        ai_row_move, ai_col_move = AI_move()
 
-                mark_square(ai_row_move, ai_col_move, 2)
+                    mark_square(ai_row_move, ai_col_move, 2)
 
                 
-                draw_circle()
+                    draw_circle()
 
-                if check_win(2):
-                    game_over = True
-                    another_game()
-                pygame.display.update()
+                    if check_win(2):
+                        pygame.display.update()
+                        time.sleep(0.2)
+                        restart()
+
+                    pygame.display.update()
                 
                 
         
