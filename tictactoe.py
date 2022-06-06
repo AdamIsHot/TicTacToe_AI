@@ -77,7 +77,7 @@ def check_win(player):
             draw_horizontal_winning_line(row)
             return True
         
-    if board[2][0] == player and board[1][1] == player and board[2][0] == player:
+    if board[2][0] == player and board[1][1] == player and board[0][2] == player:
         draw_asc_diagonal()
         return True
 
@@ -105,7 +105,6 @@ def draw_asc_diagonal():
 def draw_desc_diagonal():
     pygame.draw.line(screen, WINNING_LINE, (15, 15), (WIDTH - 15, HEIGHT - 15), 15)
 
-
 def restart():
     screen.fill(PAPER_COLOR)
     draw_lines()
@@ -117,8 +116,33 @@ def restart():
 def AI_move():
     return random.randint(0, 2), random.randint(0, 2)
 
-
-
+def winning_fields_writer(ai_row_moves, ai_col_moves, winning_fields):
+    i = -1
+    for row in ai_row_moves:
+        i += 1
+        col = ai_col_moves[i]
+        if row == 0:
+            if col == 0:
+                winning_fields[0] += 1
+            if col == 1:
+                winning_fields[1] += 1
+            if col == 2:
+                winning_fields[2] += 1
+        if row == 1:
+            if col == 0:
+                winning_fields[3] += 1
+            if col == 1:
+                winning_fields[4] += 1
+            if col == 2:
+                winning_fields[5] += 1
+        if row == 2:
+            if col == 0:
+                winning_fields[6] += 1
+            if col == 1:
+                winning_fields[7] += 1
+            if col == 2:
+                winning_fields[8] += 1
+    return winning_fields
 
 
 draw_lines()
@@ -128,6 +152,9 @@ game_over = False
 moves_row = []
 moves_col = []
 number_of_played_games = 0
+ai_row_moves = []
+ai_col_moves = []
+winning_fields = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 while True:
 
@@ -138,7 +165,6 @@ while True:
         #hra zahajuje hru hrace
         if event.type == pygame.MOUSEBUTTONDOWN:
             number_of_played_games += 1
-            print(number_of_played_games)
 
             mouseX = event.pos[0]
             mouseY = event.pos[1]
@@ -149,6 +175,7 @@ while True:
 
             if available_square(clicked_row, clicked_col):
                 mark_square(clicked_row, clicked_col, 1)
+
                 clicked_row_array = [clicked_row]
                 clicked_col_array = [clicked_col]
                 moves_row = moves_row + clicked_row_array
@@ -157,11 +184,18 @@ while True:
                 draw_cross()
 
                 if check_win(1):
+                    ai_row_moves = []
+                    ai_col_moves = []
                     pygame.display.update()
                     time.sleep(0.2)
                     number_of_played_games = 0
                     restart()
                 else:
+                    if number_of_played_games == 5:
+                        ai_row_moves = []
+                        ai_col_moves = []
+                        restart()
+
                     pygame.display.update()
                     
                     #nyni hra zahajuje hru AI
@@ -172,21 +206,28 @@ while True:
 
                     mark_square(ai_row_move, ai_col_move, 2)
 
-                
+                    ai_row_moves.append(ai_row_move)
+                    ai_col_moves.append(ai_col_move)
+
                     draw_circle()
 
                     if check_win(2):
+                        winning_fields = winning_fields_writer(ai_row_moves, ai_col_moves, winning_fields)
+                        print(winning_fields)
+                        ai_row_moves = []
+                        ai_col_moves = []
                         pygame.display.update()
                         time.sleep(0.2)
                         number_of_played_games = 0
                         restart()
 
                     pygame.display.update()
+
+                    if number_of_played_games == 5:
+                        ai_row_moves = []
+                        ai_col_moves = []
+                        restart()
                 
-            if number_of_played_games == 5:
-                restart()
-                
-        
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
                     restart()
