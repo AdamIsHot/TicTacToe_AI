@@ -94,13 +94,10 @@ def draw_vertical_winning_line(col):
 
 def draw_horizontal_winning_line(row):
     posY = row * 200 + 100
-
     pygame.draw.line(screen, WINNING_LINE, (15, posY), (WIDTH - 15, posY), 15)
-
 
 def draw_asc_diagonal():
     pygame.draw.line(screen, WINNING_LINE, (15, HEIGHT - 15), (WIDTH - 15, 15), 15)
-
 
 def draw_desc_diagonal():
     pygame.draw.line(screen, WINNING_LINE, (15, 15), (WIDTH - 15, HEIGHT - 15), 15)
@@ -113,8 +110,33 @@ def restart():
         for col in range(BOARD_COLS):
             board[row][col] = 0
 
-def AI_move():
-    return random.randint(0, 2), random.randint(0, 2)
+def AI_move(winnning_fields, ai):
+    if winning_fields == [0, 0, 0, 0, 0, 0, 0, 0, 0]:
+        return random.randint(0, 2), random.randint(0, 2)
+    else:
+        max_value = max(winning_fields)
+        max_index = winning_fields.index(max_value)
+        print(max_index)
+
+        if max_index == 0:
+            return 0, 0
+        if max_index == 1:
+            return 0, 1
+        if max_index == 2:
+            return 0, 2
+        if max_index == 3:
+            return 1, 0
+        if max_index == 4:
+            return 1, 1
+        if max_index == 5:
+            return 1, 2
+        if max_index == 6:
+            return 2, 0
+        if max_index == 7:
+            return 2, 1
+        if max_index == 8:
+            return 2, 2
+        
 
 def winning_fields_writer(ai_row_moves, ai_col_moves, winning_fields):
     i = -1
@@ -200,9 +222,12 @@ while True:
                     
                     #nyni hra zahajuje hru AI
                     time.sleep(0.2)
-                    ai_row_move, ai_col_move = AI_move()
+                    ai_try = 1
+                    ai_row_move, ai_col_move = AI_move(winning_fields, ai_try)
+
                     while not available_square(ai_row_move, ai_col_move):
-                        ai_row_move, ai_col_move = AI_move()
+                        ai_try += 1
+                        ai_row_move, ai_col_move = AI_move(winning_fields, ai_try)
 
                     mark_square(ai_row_move, ai_col_move, 2)
 
@@ -210,6 +235,9 @@ while True:
                     ai_col_moves.append(ai_col_move)
 
                     draw_circle()
+
+                    print(winning_fields)
+                    print(ai_row_move, ai_col_move)
 
                     if check_win(2):
                         winning_fields = winning_fields_writer(ai_row_moves, ai_col_moves, winning_fields)
