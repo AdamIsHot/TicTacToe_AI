@@ -1,3 +1,4 @@
+from turtle import position
 import pygame, sys
 import numpy as np
 import random
@@ -57,6 +58,8 @@ def mark_square(row, col, player):
     board[row][col] = player
 
 def available_square(row, col):
+    if row == 3 or col == 3:
+        return False#mozna nepotrebuju
     return board[row][col] == 0
 
 def is_board_full():
@@ -119,28 +122,34 @@ def kkk(winning_fields, max_index):
             return max_index
     
 
-def AI_move(winning_fields, position):
+def AI_move(winning_fields, number):
     if winning_fields == [0, 0, 0, 0, 0, 0, 0, 0, 0]:
+        print('kde')
         return random.randint(0, 2), random.randint(0, 2)
     else:
-        if position == 0 and available_square(0, 0):
-            return 0, 0
-        if position == 1 and available_square(0, 1):
-            return 0, 1 
-        if position == 2 and available_square(0, 2):
-            return 0, 2
-        if position == 3 and available_square(1, 0):
-            return 1, 0
-        if position == 4 and available_square(1, 1):
-            return 1, 1
-        if position == 5 and available_square(1, 2):
-            return 1, 2
-        if position == 6 and available_square(2, 0):
-            return 2, 0
-        if position == 7 and available_square(2, 1):
-            return 2, 1
-        if position == 8 and available_square(2, 2):
-            return 2, 2
+        for position, elem in enumerate(winning_fields):
+            if elem == number:
+                if position == 0 and available_square(0, 0):
+                    return 0, 0
+                if position == 1 and available_square(0, 1):
+                    return 0, 1 
+                if position == 2 and available_square(0, 2):
+                    return 0, 2
+                if position == 3 and available_square(1, 0):
+                    return 1, 0
+                if position == 4 and available_square(1, 1):
+                    return 1, 1
+                if position == 5 and available_square(1, 2):
+                    return 1, 2
+                if position == 6 and available_square(2, 0):
+                    return 2, 0
+                if position == 7 and available_square(2, 1):
+                    return 2, 1
+                if position == 8 and available_square(2, 2):
+                    return 2, 2
+                else:
+                    return 3, 3
+    print('kurva')
 
         
 
@@ -227,6 +236,7 @@ while True:
                     restart()
                 else:
                     if number_of_played_games == 5:
+                        number_of_played_games = 0
                         ai_row_moves = []
                         ai_col_moves = []
                         restart()
@@ -236,15 +246,31 @@ while True:
                     #nyni hra zahajuje hru AI
                     time.sleep(0.2)
                     good_move = False
-
+                    sorted_list = winning_fields.copy()
+                    sorted_list.sort()
                     w = 0
-                    while not good_move:
+
+                    while not good_move and w > -9:
+                        #print(w)
+                        
                         w = w - 1
-                        sorted_list = list_sorter(winning_fields)
-                        ai_row_move, ai_col_move = AI_move(winning_fields, winning_fields.index(sorted_list[w]))
-                        if available_square(ai_row_move, ai_col_move):
-                            w = 0
-                            good_move = True
+                        ai_row_move, ai_col_move = AI_move(winning_fields, sorted_list[w])
+                        if ai_row_move != 3:
+                            if available_square(ai_row_move, ai_col_move):
+                                print('bbbbb')
+                                if 0 <= ai_row_move <=2:
+                                    w = 0
+                                    good_move = True
+                        
+                    if w == 9:
+                        ai_row_move, ai_col_move = random.randint(0, 2), random.randint(0, 2)
+                        while not available_square(ai_row_move, ai_col_move):
+                            ai_row_move, ai_col_move = random.randint(0, 2), random.randint(0, 2)
+                    
+                    if ai_row_move == 3:
+                        ai_row_move, ai_col_move = random.randint(0, 2), random.randint(0, 2)
+                        while not available_square(ai_row_move, ai_col_move):
+                            ai_row_move, ai_col_move = random.randint(0, 2), random.randint(0, 2)
 
                     mark_square(ai_row_move, ai_col_move, 2)
 
@@ -266,6 +292,7 @@ while True:
                     pygame.display.update()
 
                     if number_of_played_games == 5:
+                        number_of_played_games = 0
                         ai_row_moves = []
                         ai_col_moves = []
                         restart()
