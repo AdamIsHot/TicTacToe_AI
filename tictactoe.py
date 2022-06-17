@@ -110,32 +110,41 @@ def restart():
         for col in range(BOARD_COLS):
             board[row][col] = 0
 
-def AI_move(winnning_fields, ai):
+def kkk(winning_fields, max_index):
+    winning_fields.sort()
+    x = 8
+    for i in winning_fields:
+        x = x - 1
+        if winning_fields[x] < max_index:
+            return max_index
+    
+
+def AI_move(winning_fields, position):
     if winning_fields == [0, 0, 0, 0, 0, 0, 0, 0, 0]:
         return random.randint(0, 2), random.randint(0, 2)
     else:
-        max_value = max(winning_fields)
-        max_index = winning_fields.index(max_value)
-        print(max_index)
-
-        if max_index == 0:
+        if position == 0 and available_square(0, 0):
             return 0, 0
-        if max_index == 1:
-            return 0, 1
-        if max_index == 2:
+        if position == 1 and available_square(0, 1):
+            return 0, 1 
+        if position == 2 and available_square(0, 2):
             return 0, 2
-        if max_index == 3:
+        if position == 3 and available_square(1, 0):
             return 1, 0
-        if max_index == 4:
+        if position == 4 and available_square(1, 1):
             return 1, 1
-        if max_index == 5:
+        if position == 5 and available_square(1, 2):
             return 1, 2
-        if max_index == 6:
+        if position == 6 and available_square(2, 0):
             return 2, 0
-        if max_index == 7:
+        if position == 7 and available_square(2, 1):
             return 2, 1
-        if max_index == 8:
+        if position == 8 and available_square(2, 2):
             return 2, 2
+
+        
+
+        
         
 
 def winning_fields_writer(ai_row_moves, ai_col_moves, winning_fields):
@@ -165,6 +174,10 @@ def winning_fields_writer(ai_row_moves, ai_col_moves, winning_fields):
             if col == 2:
                 winning_fields[8] += 1
     return winning_fields
+
+def list_sorter(list):
+    list.sort()
+    return list
 
 
 draw_lines()
@@ -222,12 +235,16 @@ while True:
                     
                     #nyni hra zahajuje hru AI
                     time.sleep(0.2)
-                    ai_try = 1
-                    ai_row_move, ai_col_move = AI_move(winning_fields, ai_try)
+                    good_move = False
 
-                    while not available_square(ai_row_move, ai_col_move):
-                        ai_try += 1
-                        ai_row_move, ai_col_move = AI_move(winning_fields, ai_try)
+                    w = 0
+                    while not good_move:
+                        w = w - 1
+                        sorted_list = list_sorter(winning_fields)
+                        ai_row_move, ai_col_move = AI_move(winning_fields, winning_fields.index(sorted_list[w]))
+                        if available_square(ai_row_move, ai_col_move):
+                            w = 0
+                            good_move = True
 
                     mark_square(ai_row_move, ai_col_move, 2)
 
@@ -236,12 +253,9 @@ while True:
 
                     draw_circle()
 
-                    print(winning_fields)
-                    print(ai_row_move, ai_col_move)
 
                     if check_win(2):
                         winning_fields = winning_fields_writer(ai_row_moves, ai_col_moves, winning_fields)
-                        print(winning_fields)
                         ai_row_moves = []
                         ai_col_moves = []
                         pygame.display.update()
