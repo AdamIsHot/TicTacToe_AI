@@ -124,7 +124,6 @@ def kkk(winning_fields, max_index):
 
 def AI_move(winning_fields, number):
     if winning_fields == [0, 0, 0, 0, 0, 0, 0, 0, 0]:
-        print('kde')
         return random.randint(0, 2), random.randint(0, 2)
     else:
         for position, elem in enumerate(winning_fields):
@@ -149,7 +148,6 @@ def AI_move(winning_fields, number):
                     return 2, 2
                 else:
                     return 3, 3
-    print('kurva')
 
         
 
@@ -249,15 +247,14 @@ while True:
                     sorted_list = winning_fields.copy()
                     sorted_list.sort()
                     w = 0
+                    
 
                     while not good_move and w > -9:
-                        #print(w)
                         
                         w = w - 1
                         ai_row_move, ai_col_move = AI_move(winning_fields, sorted_list[w])
                         if ai_row_move != 3:
                             if available_square(ai_row_move, ai_col_move):
-                                print('bbbbb')
                                 if 0 <= ai_row_move <=2:
                                     w = 0
                                     good_move = True
