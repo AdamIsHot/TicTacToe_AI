@@ -246,7 +246,7 @@ while True:
                     good_move = False
                     sorted_list = winning_fields.copy()
                     sorted_list.sort()
-                    idot = 1
+                    
                     w = 0
 
                     
